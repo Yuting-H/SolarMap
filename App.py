@@ -1,16 +1,33 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import EnergyCalculator as ec
-import POWERAPI as papi
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-@app.route('/api/data', methods=['GET'])
+# This class is the backend server
+# Run this in python, then go to http://127.0.0.1:5000/api/test
+
+#tests the backend connection
+@app.route('/api/test', methods=['GET'])
+def test():
+    return jsonify({'test_key': 'test success'}), 200
+
+@app.route('/api/getdata', methods=['POST'])
 def get_data():
-    return jsonify({"message": "Hello from Flask!"})
+    data = request.json
+    lat = data.get("latitude")
+    lon = data.get("longitude")
+
+# get the latitude and longitude given a postalCode
+@app.route('/api/getlatlon', methods=['POST'])
+def get_latlon():
+    data = request.json
+    postalCode = data.get("postalcode")
 
 
+
+# tests the HTTP POST function
+# returns x^2
 @app.route('/api/process', methods=['POST'])
 def process_value():
     # Get data from the POST request
