@@ -1,5 +1,5 @@
 import math
-
+## Creates an object that calculates the energy - dont need to look at this file
 class EnergyCalculator:
 
     def __init__(self) -> None:

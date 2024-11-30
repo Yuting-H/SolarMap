@@ -6,11 +6,7 @@ import concurrent.futures
 import threading
 
 
-
-
-
-
-
+## Data class 
 class Data:
     latitude = 0
     longitude = 0
@@ -22,6 +18,7 @@ class Data:
     df_list = []
     energyCalc = EnergyCalculator()
 
+    ## Initalizes, Creates First Node
     def __init__(self, latitude, longitude) -> None:
         self.latitude = latitude
         self.longitude = longitude
@@ -35,7 +32,7 @@ class Data:
         self.addPoints()
 
 
-
+    ## 
 
     def newParams(self,latitude,longitude):
         params = {
@@ -64,7 +61,7 @@ class Data:
                 
         return data
 
-
+    ## Expands the circle
     def addPoints(self):
     
         self.df_list.clear()
@@ -91,39 +88,44 @@ class Data:
             self.sunEnergyList.append([self.energyCalc.SolarEnergyCalculator(allsky_df), latitude1, longitude1])
 
         
-
+    ## Returns unsorted Wind Energy list
     def getWindEnergyList(self):
         return self.windEnergyList
     
+    ## Returns unsorted Solar Energy List
     def getSolarEnergyList(self):
         return self.sunEnergyList
     
+    ## Returns Sorted Wind Energy List
     def getSortedWindEnergyList(self):
         windEnergyList = self.windEnergyList.copy()
         windEnergyList = sorted(windEnergyList, key=lambda x: x[0][12], reverse=True)
         return windEnergyList
     
 
+    ## Returns Sorted Solar Energy List
     def getSortedSolarEnergyList(self):
         solarEnergyList = self.sunEnergyList.copy()
         solarEnergyList = sorted(solarEnergyList, key=lambda x: x[0][12], reverse=True)
         return solarEnergyList
     
+    ## Returns Orginal Point Wind Energy
     def getOriginalPointWindEnergy(self):
         return self.windEnergyList[0][0]
     
-
+    ## Returns Original
     def getOriginalPointSolarEnergy(self):
         return self.sunEnergyList[0][0]
 
-
+    ## Sets Radius
     def setRadius(self, radius):
         self.radius = radius
 
-
+    ## Sets Longitude
     def setLongitude(self, longitude):
         self.longitude = longitude
-
+        
+    ## Sets Latitude
     def setLatitude(self, latitude):
         self.longitude = latitude
 
