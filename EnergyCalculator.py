@@ -1,51 +1,60 @@
 import math
+## Creates an object that calculates the energy - dont need to look at this file
+class EnergyCalculator:
+
+    def __init__(self) -> None:
+        pass
 
 
-def SolarEnergyCalculator(df): 
-    month_columns = df.iloc[:, 2:]
-    monthly_sums = round(month_columns.sum(),2)
 
-    # Convert the sums to a list
-    monthly_sum_list = monthly_sums.tolist()
+    def SolarEnergyCalculator(self, df): 
+        month_columns = df.iloc[:, 2:]
+        monthly_sums = round(month_columns.sum(),2)
 
-    ## Equation to Calculate Solar Energy A*Efficiency*irridance(amount of light)
-    #Assumptions - Can have user edit it later
-    area = 1  # m^2
-    efficiency = 0.2  # 20%
-    days = 30  # 1 month
-    EnergySolar = []
-    for s in monthly_sum_list:
-        irridance = s/len(df) #In Kilowatt Hours
-        P = irridance * area * efficiency
-        E = round(P * days, 2)
-        EnergySolar.append(E)
-    
-    return EnergySolar
+        # Convert the sums to a list
+        monthly_sum_list = monthly_sums.tolist()
 
-def WindEnergyCalculator(df):
-    ## Assumptions
-   ##  P = 1/2pAv^3n
-    p = 1.225 #kg/m^3 air density
-    r = 20 #m rotor radius
-    A = 3.14 * r * r #A m^2 area of the rotor radius
-    n = 0.4 # Efficiency
-    t = 24 * 30 ## time - #of hours in a month
-    month_columns = df.iloc[:, 2:]
+        ## Equation to Calculate Solar Energy A*Efficiency*irridance(amount of light)
+        #Assumptions - Can have user edit it later
+        area = 1  # m^2
+        efficiency = 0.2  # 20%
+        days = 30  # 1 month
+        EnergySolar = []
+        for s in monthly_sum_list:
+            if type(s) == str:
+                EnergySolar.append(0)
+                continue
+            irridance = s/len(df) #In Kilowatt Hours
+            P = irridance * area * efficiency
+            E = round(P * days, 2)
+            EnergySolar.append(E)
+        
+        return EnergySolar
 
-    monthly_sums = round(month_columns.sum(),2)
+    def WindEnergyCalculator(self, df):
+        ## Assumptions
+    ##  P = 1/2pAv^3n
+        p = 1.225 #kg/m^3 air density
+        r = 20 #m rotor radius
+        A = 3.14 * r * r #A m^2 area of the rotor radius
+        n = 0.4 # Efficiency
+        t = 24 * 30 ## time - #of hours in a month
+        month_columns = df.iloc[:, 2:]
+        monthly_sums = round(month_columns.sum(),2)
+        # Convert the sums to a list
+        monthly_sum_list = monthly_sums.tolist()
 
-    # Convert the sums to a list
-    monthly_sum_list = monthly_sums.tolist()
+        EnergyWind = []
+        for s in monthly_sum_list:
+            if type(s) == str:
+                EnergyWind.append(0)
+                continue
+            v = s/(len(df)) ## Wind speed
+            P = p * A * math.pow(v,3) * (1/2) * 0.4
+            E = round(P * t / math.pow(10,6), 2)
+            EnergyWind.append(E)
 
-    EnergyWind = []
-
-    for s in monthly_sum_list:
-        v = s/(len(df)) ## Wind speed
-        P = p * A * math.pow(v,3) * (1/2) * 0.4
-        E = round(P * t / math.pow(10,6), 2)
-        EnergyWind.append(E)
-
-    return EnergyWind
+        return EnergyWind
 
 
 
