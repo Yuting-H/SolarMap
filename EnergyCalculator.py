@@ -7,15 +7,15 @@ def SolarEnergyCalculator(df):
 
     # Convert the sums to a list
     monthly_sum_list = monthly_sums.tolist()
-    print("Monthly Sums:", monthly_sum_list)
 
-
+    ## Equation to Calculate Solar Energy A*Efficiency*irridance(amount of light)
+    #Assumptions - Can have user edit it later
     area = 1.5  # m^2
     efficiency = 0.2  # 20%
     days = 30  # 1 month
     EnergySolar = []
     for s in monthly_sum_list:
-        irridance = s/len(df)
+        irridance = s/len(df) #In Kilowatt Hours
         P = irridance * area * efficiency
         E = round(P * days, 2)
         EnergySolar.append(E)
@@ -36,7 +36,6 @@ def WindEnergyCalculator(df):
 
     # Convert the sums to a list
     monthly_sum_list = monthly_sums.tolist()
-    print("Monthly Sums:", monthly_sum_list)
 
     EnergyWind = []
 

@@ -22,10 +22,23 @@ ws50m_df = df[df['PARAMETER'] == 'WS50M']  # Filter rows where PARAMETER is WD50
 allsky_df = df[df['PARAMETER'] == 'ALLSKY_SFC_SW_DWN'] 
 
 ##MWh
+##$0.192 kw/h is the average cost of electricity in Canada
 EnergyWind = WindEnergyCalculator(ws50m_df)
+EnergySavingsWind = []
+for x in EnergyWind:
+    EnergySavingsWind.append(round(x * 0.192 * 1000,2))
+
 
 ##KWh
 EnergySolar = SolarEnergyCalculator(allsky_df)
+
+## Energy to Dollers based on Average
+EnergySavingsSolar = []
+for x in EnergySolar:
+    EnergySavingsSolar.append(round(x * 0.192,2))
+
+print(EnergySavingsSolar)
+print(EnergySavingsWind)
 
 
 
