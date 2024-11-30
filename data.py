@@ -5,13 +5,14 @@ from EnergyCalculator import WindEnergyCalculator
 from EnergyCalculator import SolarEnergyCalculator
 import concurrent.futures
 import threading
+from test import zipCodetoCoordinates
 
 
-
+location = zipCodetoCoordinates()
 
     
-longitude = -77.0369
-latitude = 38.9072
+longitude = float(location[1])
+latitude = float(location[0])
 radius = 0
 
 
@@ -76,6 +77,7 @@ def addPoints(radius, windEnergyList, sunEnergyList):
 
     windEnergyList = sorted(windEnergyList, key=lambda x: x[0][12], reverse=True)
     sunEnergyList = sorted(windEnergyList, key=lambda x: x[0][12], reverse=True)
+    print(windEnergyList)
     return radius
 
 radius = addPoints(radius, windEnergyList, sunEnergyList)
