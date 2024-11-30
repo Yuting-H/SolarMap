@@ -1,5 +1,4 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 from POWERAPI import createCSV
 from EnergyCalculator import EnergyCalculator
 import concurrent.futures
@@ -32,7 +31,29 @@ class Data:
         self.addPoints()
 
 
-    ## 
+    def to_serializable_dict(self):
+        return {
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+            'radius': self.radius,
+            'windEnergyList': self.windEnergyList,
+            'sunEnergyList': self.sunEnergyList,
+            'params_list': self.params_list,
+            # Exclude self.lock and self.energyCalc
+        }
+    
+    
+    def from_serializable_dict(cls, data):
+        obj = cls(data['latitude'], data['longitude'])
+        obj.radius = data['radius']
+        obj.windEnergyList = data['windEnergyList']
+        obj.sunEnergyList = cls(data['sunEnergyList'])
+        obj.params_list = data['params_list']
+        obj.df_list = [pd.DataFrame.from_records(df_dict) for df_dict in data['df_list']]
+        # Reinitialize lock and energyCalc
+        obj.lock = threading.Lock()
+        obj.energyCalc = EnergyCalculator()
+        return obj
 
     def newParams(self,latitude,longitude):
         params = {
@@ -124,10 +145,16 @@ class Data:
     ## Sets Longitude
     def setLongitude(self, longitude):
         self.longitude = longitude
-        
+
     ## Sets Latitude
     def setLatitude(self, latitude):
         self.longitude = latitude
+
+    
+    
+        
+    
+    
 
 
 """
