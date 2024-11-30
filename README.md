@@ -1,8 +1,12 @@
 # HackWestern
 This project is a part of our HackWestern submission
 
-# Usage
+## Dependency
+pip install streamlit
+pip install pandas
+pip install plotly
+pip install pydeck
 
-# Description
+## Description
 
-# Members
+## Members
