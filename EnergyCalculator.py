@@ -10,7 +10,7 @@ def SolarEnergyCalculator(df):
 
     ## Equation to Calculate Solar Energy A*Efficiency*irridance(amount of light)
     #Assumptions - Can have user edit it later
-    area = 1.5  # m^2
+    area = 1  # m^2
     efficiency = 0.2  # 20%
     days = 30  # 1 month
     EnergySolar = []
@@ -23,7 +23,7 @@ def SolarEnergyCalculator(df):
     return EnergySolar
 
 def WindEnergyCalculator(df):
-    
+    ## Assumptions
    ##  P = 1/2pAv^3n
     p = 1.225 #kg/m^3 air density
     r = 20 #m rotor radius
