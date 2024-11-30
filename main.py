@@ -29,9 +29,11 @@ def home():
 def getSolar():
     if 'data' in session:
         data_dict = session['data']
-        listSolar = session['sunEnergyList']
+        data = Data.from_serializable_dict(Data, data_dict)
+        solarList = data.getSolarEnergyList();
+        session['data'] = data.to_serializable_dict()
         # Use the data as needed
-        return f"{len(listSolar)}"
+        return solarList
     else: return "No data found in session."
 
 if __name__ == "__main__":

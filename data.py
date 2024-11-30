@@ -39,6 +39,14 @@ class Data:
             'windEnergyList': self.windEnergyList,
             'sunEnergyList': self.sunEnergyList,
             'params_list': self.params_list,
+            'df_list': [
+            {
+                'df': df.to_dict(orient='records'),
+                'latitude': lat,
+                'longitude': lon
+            }
+            for df, lat, lon in self.df_list
+        ]
             # Exclude self.lock and self.energyCalc
         }
     
@@ -47,9 +55,10 @@ class Data:
         obj = cls(data['latitude'], data['longitude'])
         obj.radius = data['radius']
         obj.windEnergyList = data['windEnergyList']
-        obj.sunEnergyList = cls(data['sunEnergyList'])
+        obj.sunEnergyList = data['sunEnergyList']
         obj.params_list = data['params_list']
-        obj.df_list = [pd.DataFrame.from_records(df_dict) for df_dict in data['df_list']]
+        df_list_serialized = data.get('df_list', [])
+        obj.df_list = [[pd.DataFrame.from_records(item['df']),item['latitude'],item['longitude']] for item in df_list_serialized ]
         # Reinitialize lock and energyCalc
         obj.lock = threading.Lock()
         obj.energyCalc = EnergyCalculator()
