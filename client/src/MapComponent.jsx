@@ -1,78 +1,113 @@
-import React, { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import React, { useEffect, useState } from "react";
+import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
+
+// Set your Mapbox access token here
+mapboxgl.accessToken =
+  "pk.eyJ1IjoiamhhNTgiLCJhIjoiY200NGw3azJxMDA1dTJqcHpvczVhanRmOSJ9.efEjDtitrtESy5oLFc5J8w"; // Replace with your actual token
 
 const MapComponent = () => {
-  const [latitude, setLatitude] = useState("51.505"); // Default latitude
-  const [longitude, setLongitude] = useState("-0.09"); // Default longitude
-  const [position, setPosition] = useState([51.505, -0.09]); // Initial map center
+  const [map, setMap] = useState(null); // State to hold the map instance
+  const [containerReady, setContainerReady] = useState(false); // State to track if the container is ready
+  const [markers, setMarkers] = useState([]); // State to store active markers
 
-  // Function to handle latitude and longitude input
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Convert the input values to numbers and update the map center
-    const lat = parseFloat(latitude);
-    const lon = parseFloat(longitude);
-    if (!isNaN(lat) && !isNaN(lon)) {
-      setPosition([lat, lon]); // Update map center
+  // Wait for the container to be rendered
+  useEffect(() => {
+    // Mark the container as ready after the component mounts
+    setContainerReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (containerReady) {
+      const mapContainer = document.getElementById("map");
+      if (mapContainer) {
+        const mapInstance = new mapboxgl.Map({
+          container: "map", // ID of the map container
+          style: "mapbox://styles/mapbox/streets-v11",
+          center: [-98.5795, 39.8283], // Default center (US center)
+          zoom: 3,
+        });
+
+        setMap(mapInstance);
+
+        // Cleanup map when the component is unmounted
+        return () => mapInstance.remove();
+      } else {
+        console.error("Map container not found!");
+      }
+    }
+  }, [containerReady]); // Only run this when the container is ready
+
+  // Function to remove all previous markers
+  const removeMarkers = () => {
+    markers.forEach((marker) => marker.remove());
+    setMarkers([]);
+  };
+
+  // Function to search location by ZIP code or city name
+  const searchLocation = async () => {
+    const locationInput = document.getElementById("location").value;
+    if (!locationInput) {
+      alert("Please enter a ZIP Code or City.");
+      return;
+    }
+
+    try {
+      // Use Mapbox's Geocoding API to get coordinates for the entered location
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          locationInput
+        )}.json?access_token=${mapboxgl.accessToken}`
+      );
+      const data = await response.json();
+      if (data.features.length === 0) {
+        alert("Location not found!");
+        return;
+      }
+
+      // Remove previous markers
+      removeMarkers();
+
+      // Extract coordinates and place name
+      const [longitude, latitude] = data.features[0].geometry.coordinates;
+      const placeName = data.features[0].place_name;
+
+      // Update the map
+      map.flyTo({
+        center: [longitude, latitude],
+        zoom: 12,
+      });
+
+      // Add a new marker
+      const marker = new mapboxgl.Marker()
+        .setLngLat([longitude, latitude])
+        .setPopup(new mapboxgl.Popup().setText(placeName))
+        .addTo(map);
+
+      // Update state with the new marker
+      setMarkers([marker]);
+    } catch (error) {
+      console.error("Error fetching location:", error);
+      alert("An error occurred. Please try again.");
     }
   };
 
-  // Custom hook to move the map to the new marker position
-  function MoveMapView({ position }) {
-    const map = useMap();
-    map.setView(position, map.getZoom(), {
-      animate: true, // Optional: adds smooth animation to the map view
-    });
-    return null; // No rendering needed, just a side-effect
-  }
-
   return (
     <div>
-      <h1>Jump to a Location</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Latitude:</label>
-          <input
-            type="number"
-            value={latitude}
-            onChange={(e) => setLatitude(e.target.value)}
-            step="any"
-            placeholder="Enter latitude"
-          />
-        </div>
-        <div>
-          <label>Longitude:</label>
-          <input
-            type="number"
-            value={longitude}
-            onChange={(e) => setLongitude(e.target.value)}
-            step="any"
-            placeholder="Enter longitude"
-          />
-        </div>
-        <button type="submit">Go</button>
-      </form>
-
-      <MapContainer
-        center={position}
-        zoom={13}
-        style={{ width: "100%", height: "400px" }}>
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      <div id="controls">
+        <input
+          id="location"
+          type="text"
+          placeholder="Enter ZIP Code or City"
         />
-
-        {/* Move the map view when the position changes */}
-        <MoveMapView position={position} />
-
-        <Marker position={position}>
-          <Popup>
-            Latitude: {position[0]}
-            <br />
-            Longitude: {position[1]}
-          </Popup>
-        </Marker>
-      </MapContainer>
+        <button onClick={searchLocation}>Search</button>
+      </div>
+      <div
+        id="map"
+        style={{
+          width: "100%",
+          height: "100vh", // Set height to fill the entire viewport
+        }}></div>
     </div>
   );
 };
