@@ -1,0 +1,31 @@
+/* Ensure html and body take up 100% of the height */
+html, body {
+  height: 100%;
+  margin: 0;  /* Remove default margin */
+}
+
+/* Optional: If you want to make the map full height */
+#map {
+  width: 100%;
+  height: 100%;  /* Make sure the map container fills the screen */
+}
+
+#controls {
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input[type="text"] {
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
