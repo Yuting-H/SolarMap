@@ -2,8 +2,7 @@
 This project is a part of our HackWestern submission
 
 ## Running the code
-- If .venv folder not exist, run py -3 -m venv .venv
-- then run .venv\Scripts\activate
+- Run App.py 
 - cd ./client
 - npm run dev
 
