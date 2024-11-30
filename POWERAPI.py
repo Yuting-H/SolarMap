@@ -13,7 +13,7 @@ def createCSV(params):
     if response.status_code == 200:
         # Write the response content to a CSV file
         with open('data.csv', 'w') as file:
-            file.write(response.text)
+            return response.text
         print("CSV file saved as 'data.csv'")
     else:
-        print(f"Error: {response.status_code}, Message: {response.text}")
+        print(f"Error: {response.status_code}")
