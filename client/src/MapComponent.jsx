@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import axios from "axios";
 
 // Set your Mapbox access token here
 mapboxgl.accessToken =
@@ -72,6 +73,19 @@ const MapComponent = () => {
       const [longitude, latitude] = data.features[0].geometry.coordinates;
       const placeName = data.features[0].place_name;
 
+      //try api call
+      try {
+        const response = await axios.post('http://127.0.0.1:5000/api/initialize',
+           {'lat': latitude, 'lon': longitude });
+          if (response.data) {
+            console.log(response)
+          } else {
+
+          }
+      } catch (error) {
+        console.error('error fetching data', error)
+      }
+
       // Update the map
       map.flyTo({
         center: [longitude, latitude],
@@ -94,20 +108,22 @@ const MapComponent = () => {
 
   return (
     <div>
-      <div id="controls">
-        <input
-          id="location"
-          type="text"
-          placeholder="Enter ZIP Code or City"
-        />
-        <button onClick={searchLocation}>Search</button>
-      </div>
       <div
         id="map"
         style={{
           width: "100%",
           height: "100vh", // Set height to fill the entire viewport
-        }}></div>
+        }}
+      >
+        <div id="controls">
+          <input
+            id="location"
+            type="text"
+            placeholder="Enter ZIP Code or City"
+          />
+          <button onClick={searchLocation}>Search</button>
+        </div>
+      </div>
     </div>
   );
 };
