@@ -4,7 +4,7 @@ from Data import Data;
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
-@app.route('/initialize', methods = ['GET', 'POST'])
+@app.route('/api/initialize', methods = ['GET', 'POST'])
 def initialize():
     if request.method == 'POST':
         lat = float(request.form['lat'])
@@ -25,7 +25,7 @@ def initialize():
 def home():
     return "Home"
 
-@app.route("/getSolar", methods = ["GET"])
+@app.route("/api/getSolar", methods = ["GET"])
 def getSolar():
     if 'data' in session:
         data_dict = session['data']
@@ -40,7 +40,7 @@ def getSolar():
         # Use the data as needed
         return jsonify(solarDic)
     else: return "No data found in session."
-@app.route("/getSortedSolar", methods = ["GET"])
+@app.route("/api/getSortedSolar", methods = ["GET"])
 def getSortedSolar():
     if 'data' in session:
         data_dict = session['data']
@@ -56,7 +56,7 @@ def getSortedSolar():
         return jsonify(solarSortedDic)
     else: return "No data found in session."
 
-@app.route("/getWind", methods = ["GET"])
+@app.route("/api/getWind", methods = ["GET"])
 def getWind():
     if 'data' in session:
         data_dict = session['data']
@@ -72,7 +72,7 @@ def getWind():
         return jsonify(windDic)
     else: return "No data found in session."
 
-@app.route("/getSortedWind", methods = ["GET"])
+@app.route("/api/getSortedWind", methods = ["GET"])
 def getSortedWind():
     if 'data' in session:
         data_dict = session['data']
@@ -89,7 +89,7 @@ def getSortedWind():
     else: return "No data found in session."
 
 
-@app.route("/addPointsCircle", methods = ["POST"])
+@app.route("/api/addPointsCircle", methods = ["POST"])
 def addPointsCircle():
     if 'data' in session:
         data_dict = session['data']
