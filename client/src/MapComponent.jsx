@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import axios from "axios";
+import eventBus from "./eventBus";
 
 // Set your Mapbox access token here
 mapboxgl.accessToken =
@@ -75,15 +76,16 @@ const MapComponent = () => {
 
       //try api call
       try {
-        const response = await axios.post('http://127.0.0.1:5000/api/initialize',
-           {'lat': latitude, 'lon': longitude });
-          if (response.data) {
-            console.log(response)
-          } else {
-
-          }
+        const response = await axios.post(
+          "http://127.0.0.1:5000/api/initialize",
+          { lat: latitude, lon: longitude }
+        );
+        if (response.data) {
+          console.log(response);
+        } else {
+        }
       } catch (error) {
-        console.error('error fetching data', error)
+        console.error("error fetching data", error);
       }
 
       // Update the map
@@ -91,6 +93,8 @@ const MapComponent = () => {
         center: [longitude, latitude],
         zoom: 12,
       });
+
+      window.myGlobalFunction();
 
       // Add a new marker
       const marker = new mapboxgl.Marker()
@@ -113,8 +117,7 @@ const MapComponent = () => {
         style={{
           width: "100%",
           height: "100vh", // Set height to fill the entire viewport
-        }}
-      >
+        }}>
         <div id="controls">
           <input
             id="location"
