@@ -1,25 +1,20 @@
 from flask import Flask, request, jsonify, redirect, url_for, session
-from Data import Data;
+from flask_cors import CORS
+from data import Data;
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 app.secret_key = 'your_secret_key'
 
-@app.route('/api/initialize', methods = ['GET', 'POST'])
+@app.route('/api/initialize', methods = ['POST'])
 def initialize():
-    if request.method == 'POST':
-        lat = float(request.form['lat'])
-        lon = float(request.form['lon'])
-        data = Data(lat,lon)
-        session['data'] = data.to_serializable_dict()
-        return jsonify(lat), 201
+    data = request.get_json()
+    lat = float(data['lat'])
+    lon = float(data['lon'])
+    data = Data(lat,lon)
+    session['data'] = data.to_serializable_dict()
+    return jsonify(lat), 201
 
-    return '''
-        <form method="post">
-            Initial Latitude: <input type="text" name="lat"><br>
-            Initial Longitude: <input type="text" name="lon"><br>
-            <input type="submit" value="Initialize">
-        </form>
-        '''
 
 @app.route("/")
 def home():
